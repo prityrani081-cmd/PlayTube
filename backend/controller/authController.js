@@ -2,6 +2,7 @@ import uploadOnCloudary from "../config/cloudinary.js";
 import genToken from "../config/token.js";
 import User from "../model/userModel.js"
 import validator from "validator"
+import cookieParser from "cookie-parser";
 
 
 
