@@ -2,6 +2,9 @@ import { useState } from "react";
 import { FaArrowLeft, FaUserCircle, FaCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/google.png";
+import axios from "axios";
+import { serverUrl } from "../App";
+import { ClipLoader } from "react-spinners";
 
 function SignUp() {
   const [step, setStep] = useState(1);
@@ -14,6 +17,7 @@ function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [backendImage, setBackendImage] = useState(null);
   const [frontendImage, setFrontendImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -52,21 +56,38 @@ function SignUp() {
     setFrontendImage(URL.createObjectURL(file));
   };
 
-  const handleCreateAccount = () => {
-    if (!backendImage) {
-      alert("Please choose a profile picture");
-      return;
-    }
-
-    // Connect your registration API here.
-    alert("Signup UI completed! Connect your backend API to register.");
-  };
-
   const handleBack = () => {
     if (step > 1) {
       setStep(step - 1);
     } else {
       navigate("/");
+    }
+  };
+
+  //backend connection with api(axios)
+  const handleSignUp = async () => {
+    if (!backendImage) {
+      alert("Please choose a profile picture");
+      return;
+    }
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("userName", userName);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("photoUrl", backendImage);
+    try {
+      const result = await axios.post(
+        serverUrl + "/api/auth/signup",
+        formData,
+        { withCredentials: true },
+      );
+      console.log(result.data);
+      navigate("/");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
     }
   };
 
@@ -219,10 +240,15 @@ function SignUp() {
             <div className="mt-8 flex justify-end">
               <button
                 type="button"
-                onClick={handleCreateAccount}
+                onClick={handleSignUp}
                 className="rounded-full bg-green-500 px-6 py-3 text-sm text-white transition hover:bg-green-600"
+                disabled={loading}
               >
-                Create Account
+                {loading ? (
+                  <ClipLoader color="black" size={20} />
+                ) : (
+                  "Create Account"
+                )}
               </button>
             </div>
           </>
