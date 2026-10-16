@@ -86,7 +86,9 @@ function SignUp() {
       navigate("/");
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      console.log("Signup error:", error.response?.data);
+      console.log("Status:", error.response?.status);
+
       setLoading(false);
     }
   };

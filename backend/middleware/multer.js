@@ -1,13 +1,21 @@
-import multer from "multer"
+import multer from "multer";
 
-let storage = multer.diskStorage({
-    destination:(req,file,cb) => {
-        cb(null , "./public")
-    },
-    filename:(req,file,cb) => {
-        cb(null , file.originalname)
-    }
-})
-const upload = multer({storage})
+// ফাইল কোথায় এবং কী নামে save হবে
+const storage = multer.diskStorage({
+  // backend-এর public folder-এ image save করা
+  destination: (req, file, cb) => {
+    cb(null, "./public");
+  },
 
-export default upload
+  // Image-এর original filename রাখা
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+// Multer configuration
+const upload = multer({
+  storage: storage,
+});
+
+export default upload;
